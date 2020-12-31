@@ -12,36 +12,43 @@ char* readline();
 char** split_string(char*);
 
 // Complete the checkMagazine function below.
-int CheckWord(char* Note, char* Magazine, int* hist,int j){
-	if (strcmp(Note,Magazine)==0){
-		if (hist[j]==0){
-			hist[j]=1;
-			return 1;
+bool isTheSame(char* Note, char* Magazine, int* isUsed,int j){
+	if (strcmp(Note,Magazine) == 0){
+		if (isUsed[j] == false){
+			isUsed[j] = true;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
-void checkMagazine(int magazine_count, char** magazine, int note_count, char** note) {
-	int* hist = (int*) malloc(magazine_count * sizeof(int));
-	for (int i=0; i<magazine_count ; i++){
-		hist[i]=0;
+void checkMagazine(int magazine_count, char** magazine, int note_count,char** note) {
+
+	int* isUsed = (int*) malloc(magazine_count * sizeof(int));
+	// check is the malloc works:
+	if (isUsed == NULL){
+		exit(1);
 	}
+
+	for (int i=0; i<magazine_count ; i++){
+		isUsed[i] = false;
+	}
+
 	for (int i=0; i<note_count;i++){
-		int Wordexs=0;
+		int isNotPossible = false; //We check it for each note-word.
 		for (int j=0; j<magazine_count ; j++){
-			if(  CheckWord(note[i],magazine[j],hist,j) ){
-				Wordexs=1;
+			if(  isTheSame(note[i],magazine[j],isUsed,j) ){
+				isNotPossible = true;
 			}
 		}
-		if (Wordexs==0){
+		if (isNotPossible == false){
 			printf("No");
-			free(hist);
+			free(isUsed);
 			return;
 		}
 	}
 	printf("Yes");
-	free(hist);
+	free(isUsed);
 	return;
 }
 
